@@ -1,0 +1,57 @@
+name: Flutter CI/CD
+
+on:
+  push:
+    branches:
+      - main    # Trigger CI/CD on push to main branch
+  pull_request:
+    branches:
+      - main    # Trigger on pull requests to the main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest   # Use an Ubuntu runner
+
+    steps:
+      # Checkout the code
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      # Set up Flutter
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'stable'  # You can specify the version you need
+
+      # Cache Flutter dependencies
+      - name: Cache Flutter dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-flutter-
+
+      # Install dependencies
+      - name: Install Dependencies
+        run: flutter pub get
+
+      # Run Tests
+      - name: Run Tests
+        run: flutter test
+
+      # Build the app for release (Android example)
+      - name: Build APK
+        run: flutter build apk --release
+
+      # Build the app for iOS (if needed)
+      # - name: Build iOS
+      #   run: flutter build ios --release
+
+      # Deploy the APK or app (you can replace this with your deployment steps)
+      # Example: Upload the APK as an artifact
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: my-app-release.apk
+          path: build/app/outputs/flutter-apk/app-release.apk

@@ -51,7 +51,7 @@ jobs:
       # Deploy the APK or app (you can replace this with your deployment steps)
       # Example: Upload the APK as an artifact
       - name: Upload APK Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: my-app-release.apk
           path: build/app/outputs/flutter-apk/app-release.apk
